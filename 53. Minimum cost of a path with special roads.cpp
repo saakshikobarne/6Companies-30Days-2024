@@ -15,3 +15,38 @@ Return the minimum cost required to go from (startX, startY) to (targetX, target
 
 //code:
 
+class Solution {
+public:
+    int minimumCost(vector<int>& start, vector<int>& target, vector<vector<int>>& specialRoads) {
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> q;
+        int n= specialRoads.size();
+        vector<int> dist(n, INT_MAX);
+
+        for(int i=0; i<specialRoads.size(); i++){
+            int m= abs(start[0]- specialRoads[i][0])+ abs(start[1]- specialRoads[i][1])+ specialRoads[i][4];
+            q.push({m,i});
+        }
+
+        int ans= abs(start[0]- target[0])+ abs(start[1]- target[1]);
+
+        while(!q.empty()){
+            int r= specialRoads[q.top().second][2];
+            int c= specialRoads[q.top().second][3];
+            int id= q.top().second;
+            int d= q.top().first;
+            q.pop();
+
+            ans= min(ans,d+ abs(r- target[0])+ abs(c- target[1]));
+
+            for(int i=0; i<n; i++){
+                int m= abs(r- specialRoads[i][0])+ abs(c- specialRoads[i][1])+ specialRoads[i][4];
+
+                if(d+m <dist[i]){
+                    dist[i]=d+ m;
+                    q.push({dist[i],i});
+                }
+            }
+        }
+        return ans;
+    }
+};
